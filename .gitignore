@@ -1,0 +1,11 @@
+/.idea/
+
+/.idea/*
+
+/*.zip
+
+/Cargo.lock
+
+/target/
+
+minified__*

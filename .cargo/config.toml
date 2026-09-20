@@ -1,0 +1,49 @@
+[build]
+incremental = false
+
+
+[target.i686-pc-windows-msvc]
+rustflags = ['-C', 'link-arg=/LARGEADDRESSAWARE']
+
+
+#-------------------------------------- use Android Studio to download sdk and ndk to you desktop computer and point to it.
+[target.x86_64-linux-android]
+linker = 'C:/Users/Elad/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/bin/x86_64-linux-android21-clang.cmd'
+
+[target.i686-linux-android]
+linker = 'C:/Users/Elad/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/bin/i686-linux-android21-clang.cmd'
+
+[target.aarch64-linux-android]
+linker = 'C:/Users/Elad/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/bin/aarch64-linux-android21-clang.cmd'
+
+[target.armv7-linux-androideabi]
+linker = 'C:/Users/Elad/AppData/Local/Android/Sdk/ndk/30.0.14904198/toolchains/llvm/prebuilt/windows-x86_64/bin/armv7a-linux-androideabi21-clang.cmd'
+
+
+
+
+[target.aarch64-unknown-linux-gnu]
+linker = 'aarch64-linux-gnu-gcc'
+
+
+#-------------------------------------- download and unpack from https://musl.cc/ to custom folder.
+[target.aarch64-unknown-linux-musl]
+linker = '/home/elad/toolchains/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc'
+ar = '/home/elad/toolchains/aarch64-linux-musl-cross/bin/aarch64-linux-musl-ar'
+rustflags = [
+    '-C', 'link-arg=-static',
+]
+
+
+[target.powerpc-unknown-linux-gnu]
+linker = "powerpc-linux-gnu-gcc"
+
+[target.powerpc64-unknown-linux-gnu]
+linker = "powerpc64-linux-gnu-gcc"
+
+[target.powerpc64le-unknown-linux-gnu]
+linker = "powerpc64le-linux-gnu-gcc"
+
+
+
+

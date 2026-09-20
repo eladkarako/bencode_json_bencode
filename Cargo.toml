@@ -1,0 +1,33 @@
+[package]
+name = "bencode_json_bencode"
+version = "26.9.20"
+edition = "2024"
+authors = ["Elad Karako <eladkarako@gmail.com>"]
+description = "convert between bencode and JSON using file or initial STDIN (pipeline), with output written to STDOUT."
+license = "MIT"
+repository = "https://github.com/eladkarako/bencode_json_bencode"
+homepage = "https://github.com/eladkarako/bencode_json_bencode"
+keywords = ["bencode", "json", "cli"]
+categories = ["command-line-utilities", "encoding", "parser-implementations"]
+readme = "README.md"
+
+[dependencies]
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = { version = "1.0.151", features = ["preserve_order"] }
+json5 = "1.3.1"
+hex = "0.4.3"
+is-terminal = "0.4.17"
+
+[build-dependencies]
+winres = "0.1.12"
+toml = "1.1.6"
+
+[profile.release]
+opt-level = "z"          # “z” = maximum size reduction (equivalent to -C opt-level=s)
+lto = true               # Link‑time optimisation
+codegen-units = 1        # Better optimisation (single codegen unit)
+panic = "abort"          # Remove unwinding tables
+debug = false            # No debug info
+strip = true             # Strip symbols (requires rustc 1.56+)
+rpath = false            # Don't embed runtime library paths
+incremental = false      # Disable incremental compilation (cleaner builds)

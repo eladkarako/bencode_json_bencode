@@ -23,12 +23,12 @@ goto MAIN
   set "FULL_PATH=%CD%\%TARGET_NAME%\release\%BINARY%"
 
   if exist "%FULL_PATH%.exe" (
-    set "%FULL_PATH%=%FULL_PATH%.exe"
+    set "FULL_PATH=%FULL_PATH%.exe"
   )
 
+  title %TARGET_NAME%
   start "" /MAX /ABOVENORMAL "7z.exe" a -tzip -y -ssp -sse -ssw -mmt4 -mx9 -mm=Deflate -mem=ZipCrypto -w"%CD%" -x!"%TARGET_NAME%.zip" "%TARGET_NAME%.zip" "%FULL_PATH%"
   endlocal
-  timeout /t 5
   goto :eof
 ::------------------------------------------------
 
@@ -52,7 +52,6 @@ powerpc64le-unknown-linux-gnu
   call :METHOD "%%x"
 )
 
-timeout /t 10
 
 ::-------------------------------------------------------------------------------------
 :: zip packing just the binary file, of each release.

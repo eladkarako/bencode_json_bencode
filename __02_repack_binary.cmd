@@ -1,15 +1,16 @@
 ::@echo off
 chcp 65001 1>nul 2>nul
-pushd "%~sdp0"
-pushd "%CD%\target"
-
+pushd "%~dp0"
 
 set "BINARY="
-for %%F in (.\x86_64-pc-windows-msvc\release\*.exe) do ( 
-  set "BINARY=%%~nF"
+for %%I in ("%CD%") do ( 
+  set "BINARY=%%~nxI"
   goto EXIT_LOOP_BINARY
 ) 
 :EXIT_LOOP_BINARY
+
+
+pushd "%CD%\target"
 
 
 goto MAIN
@@ -18,34 +19,16 @@ goto MAIN
 ::------------------------------------------------
 :METHOD
   setlocal
-  set "TARGET=%~1"
-  title %TARGET%
+  set "TARGET_NAME=%~1"
+  set "FULL_PATH=%CD%\%TARGET_NAME%\release\%BINARY%"
 
-  set "ARGS="
-  set  ARGS=%ARGS% a
-  set  ARGS=%ARGS% -tzip
-  ::set  ARGS=%ARGS% -x!"%TARGET%.zip"
-  set  ARGS=%ARGS% -y
-  set  ARGS=%ARGS% -sse
-  set  ARGS=%ARGS% -ssw
-  set  ARGS=%ARGS% -mmt4
-  set  ARGS=%ARGS% -mx9
-  set  ARGS=%ARGS% -mm=Deflate
-  set  ARGS=%ARGS% -mem=ZipCrypto
-  set  ARGS=%ARGS% "%TARGET%.zip"
+  if exist "%FULL_PATH%.exe" (
+    set "%FULL_PATH%=%FULL_PATH%.exe"
+  )
 
-  if exist ".\%TARGET%\release\concat.exe" ( 
-    set ARGS=%ARGS% "./%TARGET%/release/concat.exe"
-  ) else ( 
-    set ARGS=%ARGS% "./%TARGET%/release/concat"
-  ) 
-
-  ::start "" /MAX /ABOVENORMAL /WAIT /B  "7z.exe" %ARGS%
-  ::echo [INFO] EXIT-CODE: %ErrorLevel% 1>&2
-  
-  start "" /MAX /ABOVENORMAL  "7z.exe" %ARGS%
-
+  start "" /MAX /ABOVENORMAL "7z.exe" a -tzip -y -ssp -sse -ssw -mmt4 -mx9 -mm=Deflate -mem=ZipCrypto -w"%CD%" -x!"%TARGET_NAME%.zip" "%TARGET_NAME%.zip" "%FULL_PATH%"
   endlocal
+  timeout /t 5
   goto :eof
 ::------------------------------------------------
 
@@ -69,15 +52,12 @@ powerpc64le-unknown-linux-gnu
   call :METHOD "%%x"
 )
 
-pause
-pause
-exit /b 0
+timeout /t 10
 
-::-----------------------------------------------------------------------------
-:: for an easier "release" (in github for example)
-::-----------------------------------------------------------------------------
-:: figure-out binary name from .\target\x86_64-pc-windows-msvc\release\*.exe
-:: zips the binary of each target to .\target\ folder.
-:: uses target as filename for the zip.
-:: assumes 7z.exe exist in system's PATH.
-::-----------------------------------------------------------------------------
+::-------------------------------------------------------------------------------------
+:: zip packing just the binary file, of each release.
+:: - zip files, named by the target's name, under '/target/'
+:: - multi-process (parallel run). 4 threads, max compression. compatible zip.
+:: - assumes project-name is same as binary name (often is).
+:: - assumes '7z.exe' folder is in system's PATH.
+::-------------------------------------------------------------------------------------
